@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: ./inventory_management
+    container_name: inventory-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./inventory_management/.env
+    environment:
+      - DB_HOST=host.docker.internal
+      - MSSQL_SERVER=host.docker.internal
+      # Ensure these overrides are set if .env differs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ./inventory-frontend
+    container_name: inventory-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: on-failure
